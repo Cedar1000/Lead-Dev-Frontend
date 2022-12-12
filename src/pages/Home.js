@@ -7,16 +7,21 @@ import { useAuthContext } from '../hooks/useAuthContext';
 // components
 import OrderItems from '../components/OrderItems';
 import Pagination from '../components/Pagination';
+import SkeletonLoaderList from '../components/SkeletonLoaderList';
 
 const Home = () => {
   const [page, setPage] = useState(1);
   const [maxPages, setMaxPages] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const { orderItems, dispatch } = useOrderItemsContext();
 
   const { user } = useAuthContext();
 
   const fetchOrderItems = async (offset = 1) => {
+    setIsLoading(true);
+
     const user = JSON.parse(localStorage.getItem('user'));
 
     const token = user ? user.token : '';
@@ -26,6 +31,8 @@ const Home = () => {
 
     setPage(data.page);
     setMaxPages(data.maxPages);
+
+    setIsLoading(false);
 
     if (data) {
       dispatch({ type: 'SET_ORDER_ITEMS', payload: data.data });
@@ -38,12 +45,16 @@ const Home = () => {
 
   return (
     <div className="home">
-      <div className="workouts">
-        {orderItems &&
-          orderItems.map((orderItem) => (
-            <OrderItems key={orderItem.id} orderItem={orderItem} />
-          ))}
-      </div>
+      {isLoading ? (
+        <SkeletonLoaderList />
+      ) : (
+        <div className="workouts">
+          {orderItems &&
+            orderItems.map((orderItem) => (
+              <OrderItems key={orderItem.id} orderItem={orderItem} />
+            ))}
+        </div>
+      )}
 
       <Pagination
         fetchOrderItems={fetchOrderItems}

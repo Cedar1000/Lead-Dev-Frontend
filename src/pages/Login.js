@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useLogin } from '../hooks/useLogin';
 
+//components
+import Loader from '../components/Loader';
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +17,8 @@ const Login = () => {
 
   return (
     <form className="login" onSubmit={handleSubmit}>
+      {error && <div className="error">{error}</div>}
+
       <h3>Log In</h3>
 
       <label>Username:</label>
@@ -29,8 +34,7 @@ const Login = () => {
         value={password}
       />
 
-      <button disabled={isLoading}>Log in</button>
-      {error && <div className="error">{error}</div>}
+      <button disabled={isLoading}>{isLoading ? <Loader /> : 'Login'}</button>
     </form>
   );
 };

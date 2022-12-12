@@ -5,6 +5,9 @@ import axios from '../uitils/axios';
 
 import { useAuthContext } from '../hooks/useAuthContext';
 
+//componets
+import Loader from '../components/Loader';
+
 const EditOrderItem = () => {
   const { user } = useAuthContext();
   const { id } = useParams();
@@ -20,8 +23,11 @@ const EditOrderItem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setIsLoading(true);
+
     await axios.patch(`/order_items/${id}`, { price, freight_value });
 
+    setIsLoading(false);
     navigate('/');
   };
 
@@ -55,7 +61,9 @@ const EditOrderItem = () => {
         value={freight_value}
       />
 
-      <button disabled={isLoading}>Edit Order Item</button>
+      <button disabled={isLoading}>
+        {isLoading ? <Loader /> : 'Edit Order Item'}
+      </button>
       {error && <div className="error">{error}</div>}
     </form>
   );

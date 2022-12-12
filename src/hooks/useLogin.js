@@ -25,8 +25,9 @@ export const useLogin = () => {
       // update loading state
       setIsLoading(false);
     } catch (error) {
+      console.log(error.response);
       setIsLoading(false);
-      setError(error.response);
+      setError(error.response.data.message);
     }
   };
 
